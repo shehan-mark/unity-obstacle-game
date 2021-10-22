@@ -6,11 +6,15 @@ public class Plane : MonoBehaviour
 {
 
     public float MoveForwardSpeed, DodgeSpeed;
-    public GameObject WallRight, WallLeft;
+    private GameObject WallRight, WallLeft;
+    private UIController UIControllerRef;
 
     // Start is called before the first frame update
     void Start()
     {
+        UIControllerRef = GameObject.FindObjectOfType<UIController>();
+        WallRight = GameObject.Find("Right-Wall");
+        WallLeft = GameObject.Find("Left-Wall");
         MoveForwardSpeed = 0.01f;
         DodgeSpeed = 0.01f;
     }
@@ -34,7 +38,10 @@ public class Plane : MonoBehaviour
 
     void MoveForward()
     {
-        transform.position = transform.position + new Vector3(0.0f, 0.0f, MoveForwardSpeed);
+        if (UIControllerRef.GetGameState() == GameState.Running)
+        {
+            transform.position = transform.position + new Vector3(0.0f, 0.0f, MoveForwardSpeed);
+        }
     }
 
     void DodgeLeft()
@@ -65,7 +72,15 @@ public class Plane : MonoBehaviour
         //print($"LOG:: Trigger - {other.tag}");
         if (other.tag == "Obstacle")
         {
+            UIControllerRef.SetGameState(GameState.GameOver);
             Destroy(this.gameObject);
         }
+
+        if (other.tag == "Milestone")
+        {
+            UIControllerRef.SetScore(1);
+        }
+
     }
+
 }

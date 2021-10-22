@@ -1,21 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class CameraControl : MonoBehaviour
 {
-    public Plane PlaneObj;
+    public UIController UIControllerRef;
+    private Plane PlaneObj;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        FollowPlayer();
+        if (UIControllerRef.GetGameState() == GameState.Running)
+        {
+            FollowPlayer();
+        }
     }
 
     void FollowPlayer()
@@ -28,17 +32,8 @@ public class CameraControl : MonoBehaviour
         }
         else
         {
-            // player not found so restarting the game
-            StartCoroutine(RestartGame());
+            PlaneObj = GameObject.FindObjectOfType<Plane>();
         }
     }
-
-    IEnumerator RestartGame()
-    {
-        yield return new WaitForSeconds(2);
-        print("LOG:: You are dead. Restarting");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
 
 }

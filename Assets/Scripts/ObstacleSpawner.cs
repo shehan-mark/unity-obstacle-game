@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class ObstacleSpawner : MonoBehaviour
 {
-    public GameObject Player;
+    public Plane Player;
     public GameObject SpawnItem;
+    public GameObject RowDetectionRow;
     public GameObject LeftWall, RightWall;
+    public UIController UIControllerRef;
 
     public float SpawnSpeed = 0.5f; // This will take care of the spawn Z distance between obstacles
     public float ForwardDistanceToPlayer = 10.0f;
@@ -17,6 +19,7 @@ public class ObstacleSpawner : MonoBehaviour
     private float RightWallWithPadding;
     private List<float> SpawnXAxisLocations;
     private List<GameObject> ObjectPool;
+    private List<GameObject> RowDetectionPool;
     private int SpawnedRows = 0;
 
     // Start is called before the first frame update
@@ -27,14 +30,22 @@ public class ObstacleSpawner : MonoBehaviour
         StartCoroutine(SpawnDelay());
 
         ObjectPool = new List<GameObject>();
+        RowDetectionPool = new List<GameObject>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Player)
+        if (UIControllerRef.GetGameState() == GameState.Running)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, Player.transform.position.z + ForwardDistanceToPlayer);
+            if (Player)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, Player.transform.position.z + ForwardDistanceToPlayer);
+            }
+            else
+            {
+                Player = GameObject.FindObjectOfType<Plane>();
+            }
         }
     }
 
@@ -58,7 +69,12 @@ public class ObstacleSpawner : MonoBehaviour
 
     void SpawnAhead()
     {
-        //print("LOG: Spawning Row");
+        if (UIControllerRef.GetGameState() != GameState.Running)
+        {
+            return;
+        }
+
+        print($"LOG: Spawning Row - {RowDetectionPool.Count}");
         Quaternion SpawnRotation = Quaternion.Euler(0, 0, 0); // I do not want to rotate anything for now
         float Spawned = 0;
         List<int> SpawnedIndex = new List<int>();
@@ -70,20 +86,38 @@ public class ObstacleSpawner : MonoBehaviour
                 float XPoint = SpawnXAxisLocations[index];
                 Vector3 SpawnLocation = new Vector3(XPoint, transform.position.y, transform.position.z);
 
+                Vector3 RowDetectionRowSpawnLoc = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
                 GameObject ObstacleObj = null;
+                GameObject RowDetectionObj = null;
                 if (SpawnedRows < 4)
                 {
                     ObstacleObj = Instantiate(SpawnItem, SpawnLocation, SpawnRotation);
+                    if (Spawned == 0)
+                    {
+                        RowDetectionObj = Instantiate(RowDetectionRow, RowDetectionRowSpawnLoc, SpawnRotation);
+                    }
                 }
                 else
                 {
                     ObstacleObj = ObjectPool[0];
                     ObjectPool.RemoveAt(0);
                     ObstacleObj.transform.position = SpawnLocation;
+
+                    if (Spawned == 0)
+                    {
+                        RowDetectionObj = RowDetectionPool[0];
+                        RowDetectionPool.RemoveAt(0);
+                        RowDetectionObj.transform.position = RowDetectionRowSpawnLoc;
+                    }
                 }
 
                 ObjectPool.Add(ObstacleObj);
-                //Destroy(SpawnedObject.gameObject, 5);
+                if (RowDetectionObj)
+                {
+                    RowDetectionPool.Add(RowDetectionObj);
+                }
+
                 SpawnedIndex.Add(index);
                 Spawned++;
                     
