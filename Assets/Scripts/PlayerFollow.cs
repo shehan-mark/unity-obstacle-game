@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviour
+public class PlayerFollow : MonoBehaviour
 {
     public UIController UIControllerRef;
     private Plane PlaneObj;

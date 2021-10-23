@@ -47,6 +47,12 @@ public class ObstacleSpawner : MonoBehaviour
                 Player = GameObject.FindObjectOfType<Plane>();
             }
         }
+
+        if (UIControllerRef.GetGameState() == GameState.GameOver)
+        {
+            // if game was over we need clean obstacle objects
+            CleanObstacles();
+        }
     }
 
     void initObstacleSpawner()
@@ -74,14 +80,15 @@ public class ObstacleSpawner : MonoBehaviour
             return;
         }
 
-        print($"LOG: Spawning Row - {RowDetectionPool.Count}");
+        //print($"LOG: Spawning Row - {RowDetectionPool.Count}");
         Quaternion SpawnRotation = Quaternion.Euler(0, 0, 0); // I do not want to rotate anything for now
-        float Spawned = 0;
-        List<int> SpawnedIndex = new List<int>();
-        while (Spawned < XSpawnAmount - SpacesToGoThrough)
+        float Spawned = 0; // Spawned amount of one row instance
+        List<int> SpawnedIndex = new List<int>(); // Spawned index from location list
+        while (Spawned < XSpawnAmount - Random.Range(1, SpacesToGoThrough))
         {
-            int index = (int)Random.Range(0, SpawnXAxisLocations.Count);
-            if (!SpawnedIndex.Contains(index))
+            int index = (int)Random.Range(0, SpawnXAxisLocations.Count); // Pick random location from XAxisLocations
+            //print($"index here {index}");
+            if (!SpawnedIndex.Contains(index)) // Check if location is already used
             {
                 float XPoint = SpawnXAxisLocations[index];
                 Vector3 SpawnLocation = new Vector3(XPoint, transform.position.y, transform.position.z);
@@ -90,7 +97,7 @@ public class ObstacleSpawner : MonoBehaviour
 
                 GameObject ObstacleObj = null;
                 GameObject RowDetectionObj = null;
-                if (SpawnedRows < 4)
+                if (SpawnedRows < 4) // Check if we have already spawned 4 rows. If so use objects from the pool. Do not instantiate
                 {
                     ObstacleObj = Instantiate(SpawnItem, SpawnLocation, SpawnRotation);
                     if (Spawned == 0)
@@ -133,5 +140,20 @@ public class ObstacleSpawner : MonoBehaviour
             yield return new WaitForSeconds(SpawnSpeed);
             SpawnAhead();
         }
+    }
+    
+    private void CleanObstacles()
+    {
+        SpawnedRows = 0;
+        for (int i = 0; i < ObjectPool.Count; i++)
+        {
+            Destroy(ObjectPool[i].gameObject);
+        }
+        for (int i = 0; i < RowDetectionPool.Count; i++)
+        {
+            Destroy(RowDetectionPool[i].gameObject);
+        }
+        ObjectPool.Clear();
+        RowDetectionPool.Clear();
     }
 }

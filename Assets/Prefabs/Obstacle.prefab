@@ -414,8 +414,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8055835174717487457}
-  - component: {fileID: 1042603758128288681}
   - component: {fileID: 1611357025018128657}
+  - component: {fileID: -3484034398444650819}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Obstacle
@@ -442,20 +442,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1042603758128288681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8953893260808467301}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2de81b8c664b41547bfc09512c2b994b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  DestroyDistance: 10
 --- !u!135 &1611357025018128657
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -469,3 +455,15 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.8
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-3484034398444650819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8953893260808467301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de81b8c664b41547bfc09512c2b994b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

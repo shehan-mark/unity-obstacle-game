@@ -96,7 +96,8 @@ public class UIController : MonoBehaviour
 
     public void RestartGame()
     {
-        Score = 0;
+        Score = 0.0f;
+        UpdateScoreUI();
         SpawnPlayer();
         ToggleMenuPanel();
         RestartButton.SetActive(false);
@@ -117,7 +118,7 @@ public class UIController : MonoBehaviour
     public void SetScore(int IncomingScore)
     {
         Score = Score + IncomingScore;
-        ScoreValuePlaceholder.text = Score.ToString();
+        UpdateScoreUI();
     }
 
     private void ToggleMenuPanel()
@@ -128,5 +129,10 @@ public class UIController : MonoBehaviour
     private void SpawnPlayer()
     {
         Instantiate(PlayerObj, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.Euler(90, 0, 0));
+    }
+
+    private void UpdateScoreUI()
+    {
+        ScoreValuePlaceholder.text = Score.ToString();
     }
 }

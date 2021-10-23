@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 4528811684422676088}
   - component: {fileID: 4528811684422676090}
   - component: {fileID: 4528811684422676089}
+  - component: {fileID: 8922552721703448697}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Player
@@ -144,9 +145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveForwardSpeed: 0
   DodgeSpeed: 0
-  WallRight: {fileID: 0}
-  WallLeft: {fileID: 0}
-  UIControllerRef: {fileID: 0}
 --- !u!136 &4528811684422676090
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -156,7 +154,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 4528811684422675974}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 1
   m_Direction: 1
@@ -177,3 +175,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &8922552721703448697
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4528811684422675974}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.0491407, z: 1}
+  m_Center: {x: 0, y: 0.003741622, z: -2.3394918e-18}

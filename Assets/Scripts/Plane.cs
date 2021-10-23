@@ -8,6 +8,7 @@ public class Plane : MonoBehaviour
     public float MoveForwardSpeed, DodgeSpeed;
     private GameObject WallRight, WallLeft;
     private UIController UIControllerRef;
+    private bool IsColliding;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,7 @@ public class Plane : MonoBehaviour
         WallLeft = GameObject.Find("Left-Wall");
         MoveForwardSpeed = 0.01f;
         DodgeSpeed = 0.01f;
+        IsColliding = false;
     }
 
     // Update is called once per frame
@@ -76,11 +78,28 @@ public class Plane : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (IsColliding)
+        {
+            return;
+        }
+
+        //print($"LOG:: Trigger Exit - {other.tag}");
         if (other.tag == "Milestone")
         {
             UIControllerRef.SetScore(1);
+            IsColliding = true;
+            StartCoroutine(ResetColliding());
         }
+    }
 
+    private IEnumerator ResetColliding()
+    {
+        yield return new WaitForSeconds(0.5f);
+        IsColliding = false;
     }
 
 }
