@@ -2,13 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum DodgeDirection
+{
+    Right,
+    Left
+}
+
+
 public class Plane : MonoBehaviour
 {
 
-    public float MoveForwardSpeed, DodgeSpeed;
+    public float MoveForwardSpeed = 0.01f;
+    public float DodgeSpeed = 0.01f;
+    public float DashSpeed = 0.1f;
     private GameObject WallRight, WallLeft;
     private UIController UIControllerRef;
     private bool IsColliding;
+
+    private float PressedTime = 0.0f;
+    private bool DashNow = false;
 
     // Start is called before the first frame update
     void Start()
@@ -16,8 +28,6 @@ public class Plane : MonoBehaviour
         UIControllerRef = GameObject.FindObjectOfType<UIController>();
         WallRight = GameObject.Find("Right-Wall");
         WallLeft = GameObject.Find("Left-Wall");
-        MoveForwardSpeed = 0.01f;
-        DodgeSpeed = 0.01f;
         IsColliding = false;
     }
 
@@ -26,15 +36,50 @@ public class Plane : MonoBehaviour
     {
         MoveForward();
 
+        ListenDashMovements();
+
+        ListenDodgeMovements();
+    }
+
+    void ListenDodgeMovements()
+    {
         // listen to input
         if (Input.GetKey("a"))
         {
-            DodgeLeft();
+            if (!DashNow)
+            {
+                DodgeLeft(DodgeSpeed);
+            }
         }
 
         if (Input.GetKey("d"))
         {
             DodgeRight();
+        }
+    }    
+
+    void ListenDashMovements()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            float Difference = Time.time - PressedTime;
+            if (Difference < 0.2f)
+            {
+                DashNow = true;
+                DashToTheSide(DodgeDirection.Left);
+            }
+            PressedTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            float Difference = Time.time - PressedTime;
+            if (Difference < 0.2f)
+            {
+                DashNow = true;
+                DashToTheSide(DodgeDirection.Right);
+            }
+            PressedTime = Time.time;
         }
     }
 
@@ -46,12 +91,12 @@ public class Plane : MonoBehaviour
         }
     }
 
-    void DodgeLeft()
+    void DodgeLeft(float Speed)
     {
         Transform LeftWallPosition = WallLeft.transform;
         if (transform.position.x > LeftWallPosition.position.x + 1)
         {
-            transform.position = transform.position + new Vector3(-DodgeSpeed, 0.0f, 0.0f);
+            transform.position = transform.position + new Vector3(-Speed, 0.0f, 0.0f);
         }
     }
 
@@ -63,6 +108,31 @@ public class Plane : MonoBehaviour
             transform.position = transform.position + new Vector3(DodgeSpeed, 0.0f, 0.0f);
         }
     }
+
+    void DashToTheSide(DodgeDirection DodgeSide)
+    {
+        if (DashNow)
+        {
+            if (DodgeSide == DodgeDirection.Left)
+            {
+                Transform LeftWallPosition = WallLeft.transform;
+                if (transform.position.x > LeftWallPosition.position.x + 1)
+                {
+                    transform.position = transform.position + new Vector3(-10 * DashSpeed, 0.0f, 0.0f);
+                }
+            }
+            else
+            {
+                Transform RightWallPosition = WallRight.transform;
+                if (transform.position.x < RightWallPosition.position.x - 1)
+                {
+                    transform.position = transform.position + new Vector3(10 * DashSpeed, 0.0f, 0.0f);
+                }
+            }
+            DashNow = false;
+        }
+    }
+
 
     void OnCollisionEnter(Collision collision)
     {
